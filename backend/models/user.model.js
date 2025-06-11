@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 
 const UserSchema = mongoose.Schema({
+
     name : {
         type : String,
         required : [true , "Name is required"],
@@ -46,5 +47,22 @@ const UserSchema = mongoose.Schema({
 
 } , {timestamps : true});
 
-module.exports = mongoose.model("User" , UserSchema);
+UserSchema.pre("save" , async function (next) {
+    if(!this.isModified("password")) {
+        return next();
+    }
+    try {
+        const salt = await bcrypt.genSalt(10);
+        this.password = bcrypt.hash(this.password , salt);
+        next();
+    } catch(error) {
+        next(error);
+    }
+})
+
+const User = mongoose.model("User" , UserSchema);
+
+export default User;
+
+
 
