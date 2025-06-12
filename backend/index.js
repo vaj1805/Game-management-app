@@ -18,10 +18,15 @@ const app = express();
 app.set("view engine" , "ejs");
 app.set("views" , "./views");
 
+app.use(express.urlencoded({extended : true}));
 app.use(cors());
 app.use(bodyParser.json());
 
+
+
+//paths
 app.use("/api/auth" , authRoutes);
+
 // app.use("/api/games" , gameRoutes);
 // app.use("/api/bookings" , bookingRoutes);
 // app.use("/api/payments" , paymentRoutes);

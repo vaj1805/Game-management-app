@@ -20,6 +20,7 @@
     "call-bound": "^1.0.4",
     "chokidar": "^3.6.0",
     "concat-map": "^0.0.1",
+    "connect-flash": "^0.1.1",
     "content-disposition": "^1.0.0",
     "content-type": "^1.0.5",
     "cookie": "^0.7.2",
@@ -134,7 +135,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "dev" : "nodemon index.js"
+    "dev": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
