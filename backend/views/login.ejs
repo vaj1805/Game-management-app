@@ -1,7 +1,8 @@
 <% /* This view is injected into layouts/main.ejs */ %>
 
 <h2 class="mb-4">Login</h2>
-<form action="/api/auth/login" method="POST">
+
+<form  action="/api/auth/login" method="POST">
   <div class="form-group mb-3">
     <label for="email">Email</label>
     <input
@@ -10,7 +11,7 @@
       name="email"
       class="form-control"
       required
-      value="<%= typeof formData !== 'undefined' ? formData.email : '' %>"
+      value="<%= typeof email !== 'undefined' ? email : '' %>"
     />
   </div>
 

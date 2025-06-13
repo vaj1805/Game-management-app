@@ -4,8 +4,8 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import Razorpay from "razorpay";
-import gameDatabase from './config/db.js'
-import authRoutes from "./routes/auth.route.js"
+import gameDatabase from './config/db.js';
+import authRoutes from "./routes/auth.route.js";
 
 dotenv.config();
 const PORT = process.env.PORT || 8001;
@@ -18,8 +18,9 @@ const app = express();
 app.set("view engine" , "ejs");
 app.set("views" , "./views");
 
-app.use(express.urlencoded({extended : true}));
+app.use(express.urlencoded({extended : false}));    
 app.use(cors());
+app.use(express.json());
 app.use(bodyParser.json());
 
 
