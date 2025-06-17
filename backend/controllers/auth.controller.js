@@ -72,9 +72,14 @@ export async function login(req, res, next) {
       role: existingUser.role
     }
     const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: "7d" });
-    console.log('My Token is:', token);
+    // console.log('My Token is:', token);
+    res.cookie("token" , token , {httpOnly : true, maxAge : 7*24*60*60*1000});
 
-    res.render("dashboard");
+    if(existingUser.role === "Owner") {
+      return res.render("dashboard/owner" , {user : payload});
+    } else {
+      return res.render("dashboard/player" , {user : payload});
+    }
 
   } catch (error) {
     next(error);

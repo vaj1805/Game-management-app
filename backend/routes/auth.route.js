@@ -1,10 +1,8 @@
 import express from 'express';
 import {register , login, showLogin, showRegister } from "../controllers/auth.controller.js";
-import ensureLoggedin from "../authMiddleware.js";
+import {ensureLoggedIn} from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
-
-
 
 //render login form.
 router.get("/login" , showLogin);
@@ -19,6 +17,7 @@ router.get("/register" , showRegister);
 router.post("/register" , register);
 
 //displaying dashboard
-router.get("/dashboard" , ensureLoggedin );
+router.get("/dashboard" , ensureLoggedIn);
 
 export default router;
+

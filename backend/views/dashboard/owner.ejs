@@ -1,0 +1,16 @@
+<% /* views/dashboard/owner.ejs */ %>
+
+<div class="dashboard-container">
+  <h1>Owner Dashboard</h1>
+  <p>Welcome, <strong><%= user.name %></strong>!</p>
+
+  <section class="manage-games">
+    <h2>Manage Your Games</h2>
+    <p><a href="/games/manage" class="btn">Add / Edit Games</a></p>
+  </section>
+
+  <section class="view-bookings">
+    <h2>View Bookings &amp; Revenue</h2>
+    <p><a href="/bookings/manage" class="btn">See All Bookings</a></p>
+  </section>
+</div>
