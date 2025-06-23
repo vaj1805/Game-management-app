@@ -8,7 +8,6 @@ import path from "path";
 
 import gameDatabase from './config/db.js';
 import authRoutes from "./routes/auth.route.js";
-
 import dashboardRoutes from "./routes/dashboard.route.js";
 
 
@@ -32,11 +31,15 @@ app.use(express.static(path.join(process.cwd() , "public")));
 
 //paths
 app.use("/api/auth" , authRoutes);
-
-// app.use("/api/games" , gameRoutes);
-// app.use("/api/bookings" , bookingRoutes);
+// app.use("/bookings" , bookingRoutes);
+//app.use("/api/bookings" , bookingRoutes);
 // app.use("/api/payments" , paymentRoutes);
 
+
+//showing home page.
+app.get("/home" , (req,res) => {
+    res.render("homepage");
+}) 
 
 // const razorpay =  new Razorpay({
 //     key_id : ,

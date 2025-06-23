@@ -4,6 +4,8 @@ import { showOwnerDashboard , showPlayerDashboard } from "../controllers/dashboa
 
 const router = express.Router();
 
+
+
 router.get("/player" , ensureLoggedIn , ensurePlayer , showPlayerDashboard);
 
 router.get("/owner" , ensureLoggedIn , ensureOwner , showOwnerDashboard);

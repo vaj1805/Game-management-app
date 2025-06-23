@@ -24,6 +24,7 @@ const UserSchema = mongoose.Schema({
         required : [true , "Password is required"],
         minLength : [6, "Password must be atleast 6 characters long"]
     },
+    //to add a admin field , but there can only be one admin.
     role : {
         type : String,
         enum : ["Player" , "Owner"],
@@ -47,6 +48,7 @@ const UserSchema = mongoose.Schema({
 
 } , {timestamps : true});
 
+//hook to save pwd. 
 UserSchema.pre("save" , async function (next) {
     if(!this.isModified("password")) {
         return next();

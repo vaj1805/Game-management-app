@@ -52,4 +52,4 @@ const gameSchema = mongoose.Schema({
 
 }, {timestamps : true});
 
-module.exports = mongoose.Schema("Game" , gameSchema);
+export default mongoose.model("Game" , gameSchema);
