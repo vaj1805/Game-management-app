@@ -1,3 +1,3 @@
-export const async function payments() {
+export async function payments() {
     
 }

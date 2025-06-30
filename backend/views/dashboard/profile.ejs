@@ -1,0 +1,111 @@
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header">
+                    <h3 class="mb-0">
+                        <i class="bi bi-person-circle"></i> My Profile
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <% if (typeof error !== 'undefined' && error) { %>
+                        <div class="alert alert-danger" role="alert">
+                            <%= error %>
+                        </div>
+                    <% } %>
+
+                    <% if (typeof success !== 'undefined' && success) { %>
+                        <div class="alert alert-success" role="alert">
+                            <%= success %>
+                        </div>
+                    <% } %>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Personal Information</h5>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Name</label>
+                                <p class="form-control-plaintext"><%= profile.name %></p>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Email</label>
+                                <p class="form-control-plaintext"><%= profile.email %></p>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Phone</label>
+                                <p class="form-control-plaintext"><%= profile.phoneNum || 'Not provided' %></p>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">City</label>
+                                <p class="form-control-plaintext"><%= profile.city || 'Not provided' %></p>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Role</label>
+                                <p class="form-control-plaintext">
+                                    <span class="badge bg-primary"><%= profile.role || user.role %></span>
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h5>Account Information</h5>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Member Since</label>
+                                <p class="form-control-plaintext">
+                                    <%= new Date(profile.createdAt).toLocaleDateString() %>
+                                </p>
+                            </div>
+                            
+                            <% if (user.role === 'Owner') { %>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Total Earnings</label>
+                                    <p class="form-control-plaintext text-success">
+                                        ₹<%= profile.totalEarnings || 0 %>
+                                    </p>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Games Listed</label>
+                                    <p class="form-control-plaintext">
+                                        <%= profile.games ? profile.games.length : 0 %> games
+                                    </p>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Verification Status</label>
+                                    <p class="form-control-plaintext">
+                                        <span class="badge bg-<%= profile.isVerified ? 'success' : 'warning' %>">
+                                            <%= profile.isVerified ? 'Verified' : 'Pending Verification' %>
+                                        </span>
+                                    </p>
+                                </div>
+                            <% } else { %>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Total Bookings</label>
+                                    <p class="form-control-plaintext">
+                                        <%= profile.bookingHistory ? profile.bookingHistory.length : 0 %> bookings
+                                    </p>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="/dashboard" class="btn btn-outline-secondary me-md-2">
+                            <i class="bi bi-arrow-left"></i> Back to Dashboard
+                        </a>
+                        <button class="btn btn-primary" onclick="alert('Profile editing feature coming soon!')">
+                            <i class="bi bi-pencil"></i> Edit Profile
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

@@ -1,6 +1,7 @@
 import User from "../models/user.model.js"
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import Owner from '../models/owner.model.js';
 
 export function showAdmin(req,res) {
     res.render("auth/adminlogin" , {
@@ -9,7 +10,7 @@ export function showAdmin(req,res) {
     })
 }
 
-export async function adminlogin(req,res,next) {
+export async function adminLogin(req,res,next) {
     const {email , password} = req.body;
     try {
         if(email === "admin@gmail.com" && password === "admin123") {
@@ -31,78 +32,177 @@ export function showRegister(req, res) {
 
 export async function register(req, res, next) {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password, confirmPassword, role, phoneNum, city } = req.body;
 
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    console.log('Registration attempt:', { name, email, role, city });
 
-    const existing = await User.findOne({ email });
-    if (existing) {
-      return res
-        .status(400)
-        .render("auth/register", { error_msg: "Email already registered", formData: req.body });
+    // Validation
+    if (!name || !email || !password || !confirmPassword || !role || !city) {
+      return res.status(400).render("auth/register", { 
+        error: "All required fields must be filled", 
+        formData: req.body 
+      });
     }
 
-    const user = new User({ name, email, password: hashedPassword, role });
-    await user.save();
-
-    // Render login and pass a success message + the email to prefill
-    return res
-      .status(201)
-      .render("auth/login", {
-        success_msg: "Registration successful. Please log in.",
-        formData: { email },
+    if (password !== confirmPassword) {
+      return res.status(400).render("auth/register", { 
+        error: "Passwords do not match", 
+        formData: req.body 
       });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).render("auth/register", { 
+        error: "Password must be at least 6 characters long", 
+        formData: req.body 
+      });
+    }
+
+    // Check if user already exists in either collection
+    const existingUser = await User.findOne({ email });
+    const existingOwner = await Owner.findOne({ email });
+
+    if (existingUser || existingOwner) {
+      return res.status(400).render("auth/register", { 
+        error: "User with this email already exists", 
+        formData: req.body 
+      });
+    }
+
+    console.log('Creating user with role:', role);
+
+    // Create user based on role
+    if (role === 'Owner') {
+      // Do NOT hash password here, let pre-save hook handle it
+      const owner = new Owner({
+        name,
+        email,
+        password, // plain password
+        phoneNum,
+        city
+      });
+      await owner.save();
+      console.log('Owner created successfully:', owner._id);
+    } else {
+      // For User, keep manual hashing (since User model does not have pre-save hook)
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
+      const user = new User({
+        name,
+        email,
+        password: hashedPassword,
+        phoneNum,
+        city
+      });
+      await user.save();
+      console.log('User created successfully:', user._id);
+    }
+
+    // Redirect to login with success message
+    req.session.success = 'Registration successful! Please login.';
+    return res.redirect('/auth/login');
+
   } catch (error) {
-    next(error);
+    console.error('Registration error:', error);
+    return res.status(500).render("auth/register", { 
+      error: "Registration failed. Please try again.", 
+      formData: req.body 
+    });
   }
 }
-
 
 export function showLogin(req, res) {
-  return res.render("auth/login", { error: null, email: "" });
+  if (req.session.user) {
+    return res.redirect('/dashboard');
+  }
+  res.render('auth/login', { 
+    title: 'Login - Player Finder',
+    error: req.session.error,
+    success: req.session.success
+  });
+  // Clear flash messages
+  delete req.session.error;
+  delete req.session.success;
 }
 
-
-export async function login(req, res, next) {
-  const { email, password } = req.body;
-  //console.log('login payload' , req.body);
-
+export async function login(req, res) {
   try {
-    const existingUser = await User.findOne({ email});
-    if (!existingUser) {
-      console.log("No user found")
-      return res.status(400).render("auth/login", { error: "No account with that email ", email});
+    const { email, password, role } = req.body;
+
+    console.log('Login attempt:', { email, role });
+
+    if (!email || !password || !role) {
+      req.session.error = 'All fields are required';
+      return res.redirect('/auth/login');
     }
 
-    const isMatch = await bcrypt.compare(password, existingUser.password);
-
-    if (!isMatch) {
-      console.log("wrong password");
-      return res.status(400).render("auth/login", { error: "incorrect password.", email });
-    }
-
-    //if match of password then create a payload.
-
-    const payload = {
-      userId: existingUser._id,
-      name: existingUser.name,
-      email: existingUser.email,
-      role: existingUser.role
-    }
-    const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: "7d" });
-    // console.log('My Token is:', token);
-    res.cookie("token" , token , {httpOnly : true, maxAge : 7*24*60*60*1000});
-
-    if(existingUser.role === "Owner") {
-      return res.render("dashboard/owner" , {user : payload});
+    let user;
+    if (role === 'Owner') {
+      user = await Owner.findOne({ email }).select('+password');
+      console.log('Owner lookup result:', user ? 'Found' : 'Not found');
     } else {
-      return res.render("dashboard/player" , {user : payload});
+      user = await User.findOne({ email }).select('+password');
+      console.log('User lookup result:', user ? 'Found' : 'Not found');
+    }
+
+    if (!user) {
+      console.log('No user found with email:', email);
+      req.session.error = 'Invalid credentials';
+      return res.redirect('/auth/login');
+    }
+
+    console.log('User found:', {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      hasPassword: !!user.password
+    });
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    console.log('Password validation:', isPasswordValid);
+
+    if (!isPasswordValid) {
+      req.session.error = 'Invalid credentials';
+      return res.redirect('/auth/login');
+    }
+
+    // Create session with proper role
+    req.session.user = {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: role,
+      city: user.city
+    };
+
+    console.log('Login successful:', {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: role
+    });
+
+    // Redirect based on role
+    if (role === 'Owner') {
+      res.redirect('/dashboard/owner');
+    } else {
+      res.redirect('/dashboard/player');
     }
 
   } catch (error) {
-    next(error);
+    console.error('Login error:', error);
+    req.session.error = 'Login failed. Please try again.';
+    res.redirect('/auth/login');
   }
+}
+
+export const logout = (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Logout error:', err);
+    }
+    res.redirect('/');
+  });
 }
 
 

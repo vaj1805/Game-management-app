@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-lg">
+                    <div class="card-header">
+                        <h3 class="mb-0">
+                            <i class="bi bi-plus-circle"></i> Add New Game
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <% if (typeof error !== 'undefined' && error) { %>
+                            <div class="alert alert-danger" role="alert">
+                                <%= error %>
+                            </div>
+                        <% } %>
+
+                        <form action="/games/owner/create" method="POST">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="name" class="form-label">Game Name *</label>
+                                    <input type="text" class="form-control" id="name" name="name" 
+                                           value="<%= typeof formData !== 'undefined' && formData.name ? formData.name : '' %>"
+                                           required>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="category" class="form-label">Category *</label>
+                                    <select class="form-select" id="category" name="category" required>
+                                        <option value="">Select category</option>
+                                        <option value="Indoor" <%= typeof formData !== 'undefined' && formData.category === 'Indoor' ? 'selected' : '' %>>Indoor</option>
+                                        <option value="Outdoor" <%= typeof formData !== 'undefined' && formData.category === 'Outdoor' ? 'selected' : '' %>>Outdoor</option>
+                                        <option value="GamingCafe" <%= typeof formData !== 'undefined' && formData.category === 'GamingCafe' ? 'selected' : '' %>>Gaming Cafe</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="city" class="form-label">City *</label>
+                                    <input type="text" class="form-control" id="city" name="city" 
+                                           value="<%= typeof formData !== 'undefined' && formData.city ? formData.city : '' %>"
+                                           required>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="pricePerHour" class="form-label">Price per Hour (₹) *</label>
+                                    <input type="number" class="form-control" id="pricePerHour" name="pricePerHour" 
+                                           value="<%= typeof formData !== 'undefined' && formData.pricePerHour ? formData.pricePerHour : '' %>"
+                                           min="0" step="0.01" required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="population" class="form-label">Maximum Players *</label>
+                                    <input type="number" class="form-control" id="population" name="population" 
+                                           value="<%= typeof formData !== 'undefined' && formData.population ? formData.population : '1' %>"
+                                           min="1" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea class="form-control" id="description" name="description" rows="4" 
+                                          placeholder="Describe your game, facilities, rules, etc..."><%= typeof formData !== 'undefined' && formData.description ? formData.description : '' %></textarea>
+                            </div>
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a href="/games/owner/list" class="btn btn-outline-secondary me-md-2">Cancel</a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-plus-circle"></i> Add Game
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>My Bookings</h2>
+                <a href="/games" class="btn btn-primary">
+                    <i class="bi bi-plus"></i> Book New Game
+                </a>
+            </div>
+
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="alert alert-danger" role="alert">
+                    <%= error %>
+                </div>
+            <% } %>
+
+            <% if (typeof success !== 'undefined' && success) { %>
+                <div class="alert alert-success" role="alert">
+                    <%= success %>
+                </div>
+            <% } %>
+
+            <% if (bookings && bookings.length > 0) { %>
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Game</th>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th>Players</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% bookings.forEach(booking => { %>
+                                        <tr>
+                                            <td>
+                                                <div>
+                                                    <strong><%= booking.game.name %></strong>
+                                                    <br>
+                                                    <small class="text-muted">
+                                                        <i class="bi bi-geo-alt"></i> <%= booking.game.city %>
+                                                    </small>
+                                                </div>
+                                            </td>
+                                            <td><%= booking.date %></td>
+                                            <td><%= booking.timeRange.from %> - <%= booking.timeRange.to %></td>
+                                            <td><%= booking.quantity %></td>
+                                            <td>₹<%= booking.totalPrice %></td>
+                                            <td>
+                                                <span class="badge bg-<%= booking.paymentStatus === 'paid' ? 'success' : 
+                                                                      booking.paymentStatus === 'pending' ? 'warning' : 'danger' %>">
+                                                    <%= booking.paymentStatus %>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <% if (booking.paymentStatus === 'pending') { %>
+                                                        <a href="/bookings/<%= booking._id %>/payment" 
+                                                           class="btn btn-sm btn-outline-primary">
+                                                            <i class="bi bi-credit-card"></i> Pay
+                                                        </a>
+                                                    <% } %>
+                                                    
+                                                    <a href="/games/<%= booking.game._id %>" 
+                                                       class="btn btn-sm btn-outline-info">
+                                                        <i class="bi bi-eye"></i> View
+                                                    </a>
+                                                    
+                                                    <% if (booking.paymentStatus === 'pending') { %>
+                                                        <form action="/bookings/<%= booking._id %>/cancel" 
+                                                              method="POST" class="d-inline">
+                                                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                                    onclick="return confirm('Are you sure you want to cancel this booking?')">
+                                                                <i class="bi bi-x-circle"></i> Cancel
+                                                            </button>
+                                                        </form>
+                                                    <% } %>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            <% } else { %>
+                <div class="text-center py-5">
+                    <i class="bi bi-calendar-x text-muted" style="font-size: 4rem;"></i>
+                    <h4 class="text-muted mt-3">No bookings yet</h4>
+                    <p class="text-muted">Start exploring and booking games to see them here!</p>
+                    <a href="/games" class="btn btn-primary">
+                        <i class="bi bi-controller"></i> Browse Games
+                    </a>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div> 

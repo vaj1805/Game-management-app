@@ -1,0 +1,129 @@
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>My Games</h2>
+                <a href="/games/owner/create" class="btn btn-primary">
+                    <i class="bi bi-plus"></i> Add New Game
+                </a>
+            </div>
+
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="alert alert-danger" role="alert">
+                    <%= error %>
+                </div>
+            <% } %>
+
+            <% if (typeof success !== 'undefined' && success) { %>
+                <div class="alert alert-success" role="alert">
+                    <%= success %>
+                </div>
+            <% } %>
+
+            <% if (games && games.length > 0) { %>
+                <div class="row">
+                    <% games.forEach(game => { %>
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card shadow h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h5 class="card-title mb-0"><%= game.name %></h5>
+                                        <span class="badge bg-primary"><%= game.category %></span>
+                                    </div>
+                                    
+                                    <p class="text-muted mb-2">
+                                        <i class="bi bi-geo-alt"></i> <%= game.city %>
+                                    </p>
+                                    
+                                    <p class="card-text">
+                                        <%= game.description ? (game.description.length > 100 ? game.description.substring(0, 100) + '...' : game.description) : 'No description available' %>
+                                    </p>
+                                    
+                                    <div class="row text-center mb-3">
+                                        <div class="col-6">
+                                            <h6 class="text-primary mb-0">₹<%= game.pricePerHour %></h6>
+                                            <small class="text-muted">per hour</small>
+                                        </div>
+                                        <div class="col-6">
+                                            <h6 class="text-success mb-0"><%= game.population %></h6>
+                                            <small class="text-muted">max players</small>
+                                        </div>
+                                    </div>
+
+                                    <!-- Booking Stats -->
+                                    <div class="mb-3">
+                                        <small class="text-muted">
+                                            <i class="bi bi-calendar-check"></i> 
+                                            <%= game.bookedSlots ? game.bookedSlots.length : 0 %> booked slots
+                                        </small>
+                                    </div>
+
+                                    <div class="d-grid gap-2">
+                                        <a href="/games/<%= game._id %>" class="btn btn-outline-primary btn-sm">
+                                            <i class="bi bi-eye"></i> View Details
+                                        </a>
+                                        <a href="/games/owner/<%= game._id %>/edit" class="btn btn-outline-secondary btn-sm">
+                                            <i class="bi bi-pencil"></i> Edit
+                                        </a>
+                                        <form action="/games/owner/<%= game._id %>/delete" method="POST" class="d-inline">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm w-100"
+                                                    onclick="return confirm('Are you sure you want to delete this game? This action cannot be undone.')">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+
+                <!-- Summary Statistics -->
+                <div class="row mt-4">
+                    <div class="col-md-3">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body text-center">
+                                <h5>Total Games</h5>
+                                <h3><%= games.length %></h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-success text-white">
+                            <div class="card-body text-center">
+                                <h5>Active Games</h5>
+                                <h3><%= games.filter(g => g.bookedSlots && g.bookedSlots.length > 0).length %></h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-info text-white">
+                            <div class="card-body text-center">
+                                <h5>Total Bookings</h5>
+                                <h3><%= games.reduce((sum, g) => sum + (g.bookedSlots ? g.bookedSlots.length : 0), 0) %></h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-warning text-white">
+                            <div class="card-body text-center">
+                                <h5>Avg Price</h5>
+                                <h3>₹<%= Math.round(games.reduce((sum, g) => sum + g.pricePerHour, 0) / games.length) %></h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% } else { %>
+                <div class="text-center py-5">
+                    <i class="bi bi-controller text-muted" style="font-size: 4rem;"></i>
+                    <h4 class="text-muted mt-3">No games yet</h4>
+                    <p class="text-muted">Start by adding your first game to begin earning!</p>
+                    <a href="/games/owner/create" class="btn btn-primary">
+                        <i class="bi bi-plus"></i> Add Your First Game
+                    </a>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+

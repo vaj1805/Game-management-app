@@ -1,7 +1,7 @@
 // config/db.js
 import mongoose from 'mongoose';
 
-const gameDatabase = async () => {
+const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.MONGODB_URI);
     console.log(`MongoDB connected: ${conn.connection.host}`);
@@ -11,4 +11,6 @@ const gameDatabase = async () => {
   }
 };
 
-export default gameDatabase;
+export default connectDB;
+
+

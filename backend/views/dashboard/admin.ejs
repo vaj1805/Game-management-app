@@ -6,6 +6,210 @@
     <title>Admin</title>
 </head>
 <body>
-    <h1>Hi from admin.</h1>
+    <div class="container py-4">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="mb-4">Admin Dashboard 🛠️</h1>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-0"><%= stats.totalUsers %></h3>
+                            <p class="mb-0">Total Users</p>
+                        </div>
+                        <i class="bi bi-people display-6"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-0"><%= stats.totalOwners %></h3>
+                            <p class="mb-0">Game Owners</p>
+                        </div>
+                        <i class="bi bi-shop display-6"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-0"><%= stats.totalGames %></h3>
+                            <p class="mb-0">Total Games</p>
+                        </div>
+                        <i class="bi bi-controller display-6"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-0">₹<%= stats.totalRevenue %></h3>
+                            <p class="mb-0">Total Revenue</p>
+                        </div>
+                        <i class="bi bi-currency-rupee display-6"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activities -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Recent Bookings</h5>
+                    </div>
+                    <div class="card-body">
+                        <% if (recentBookings && recentBookings.length > 0) { %>
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Player</th>
+                                            <th>Game</th>
+                                            <th>Amount</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% recentBookings.forEach(booking => { %>
+                                            <tr>
+                                                <td><%= booking.user.name %></td>
+                                                <td><%= booking.game.name %></td>
+                                                <td>₹<%= booking.totalPrice %></td>
+                                                <td>
+                                                    <span class="badge bg-<%= booking.paymentStatus === 'paid' ? 'success' : 'warning' %>">
+                                                        <%= booking.paymentStatus %>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <% } else { %>
+                            <p class="text-muted text-center py-3">No recent bookings</p>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Recent Games</h5>
+                    </div>
+                    <div class="card-body">
+                        <% if (recentGames && recentGames.length > 0) { %>
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Game</th>
+                                            <th>Owner</th>
+                                            <th>Category</th>
+                                            <th>Price</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% recentGames.forEach(game => { %>
+                                            <tr>
+                                                <td><%= game.name %></td>
+                                                <td><%= game.owner.name %></td>
+                                                <td><span class="badge bg-primary"><%= game.category %></span></td>
+                                                <td>₹<%= game.pricePerHour %>/hour</td>
+                                            </tr>
+                                        <% }) %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <% } else { %>
+                            <p class="text-muted text-center py-3">No recent games</p>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Overview -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">System Overview</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <i class="bi bi-graph-up display-4 text-success mb-3"></i>
+                                    <h4>Platform Growth</h4>
+                                    <p class="text-muted">The platform is growing steadily with new users and games being added regularly.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <i class="bi bi-shield-check display-4 text-primary mb-3"></i>
+                                    <h4>Security</h4>
+                                    <p class="text-muted">All transactions are secure with proper authentication and authorization.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <i class="bi bi-gear display-4 text-warning mb-3"></i>
+                                    <h4>Management</h4>
+                                    <p class="text-muted">Comprehensive admin tools for managing users, games, and platform settings.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Admin Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <a href="/dashboard/profile" class="btn btn-outline-primary w-100">
+                                    <i class="bi bi-person"></i> Profile
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <a href="/games" class="btn btn-outline-info w-100">
+                                    <i class="bi bi-controller"></i> View Games
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <a href="/bookings" class="btn btn-outline-success w-100">
+                                    <i class="bi bi-calendar"></i> View Bookings
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <a href="/auth/logout" class="btn btn-outline-danger w-100">
+                                    <i class="bi bi-box-arrow-right"></i> Logout
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

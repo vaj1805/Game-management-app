@@ -1,7 +1,7 @@
 {
-  "name": "backend",
+  "name": "player-finder-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Backend for Player Finder - Game Rental & Management System",
   "main": "index.js",
   "dependencies": {
     "accepts": "^2.0.0",
@@ -41,6 +41,7 @@
     "escape-html": "^1.0.3",
     "etag": "^1.8.1",
     "express": "^5.1.0",
+    "express-session": "^1.18.1",
     "fill-range": "^7.1.1",
     "finalhandler": "^2.1.0",
     "forwarded": "^0.2.0",
@@ -137,7 +138,13 @@
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
-  "keywords": [],
+  "keywords": [
+    "game-rental",
+    "booking-system",
+    "nodejs",
+    "express",
+    "mongodb"
+  ],
   "author": "",
   "license": "ISC",
   "type": "module"

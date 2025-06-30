@@ -23,6 +23,11 @@ const gameSchema = mongoose.Schema({
       required: [true, "Rental price per hour is required"],
       min: [0, "Price cannot be negative"],
     },
+    owner : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : "Owner",
+        required : [true , "Owner is required"],
+    },
     bookedSlots : [
         {
             date : {
@@ -48,7 +53,7 @@ const gameSchema = mongoose.Schema({
         type : Number,
         default : 1,
         min : [1 , "number of players must be atleast 1"],
-    } 
+    },
 
 }, {timestamps : true});
 

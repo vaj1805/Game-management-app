@@ -55,12 +55,17 @@ UserSchema.pre("save" , async function (next) {
     }
     try {
         const salt = await bcrypt.genSalt(10);
-        this.password = bcrypt.hash(this.password , salt);
+        this.password = await bcrypt.hash(this.password , salt);
         next();
     } catch(error) {
         next(error);
     }
-})
+});
+
+// Method to compare password
+UserSchema.methods.comparePassword = async function (candidatePassword) {
+    return await bcrypt.compare(candidatePassword, this.password);
+};
 
 const User = mongoose.model("User" , UserSchema);
 

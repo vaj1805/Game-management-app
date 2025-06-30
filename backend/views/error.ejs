@@ -6,7 +6,47 @@
     <title>404 error</title>
 </head>
 <body>
-    <h1>Sorry error !!!</h1>
-    <h2>retry</h2>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center">
+                <div class="py-5">
+                    <i class="bi bi-exclamation-triangle display-1 text-warning mb-4"></i>
+                    <h1 class="display-4 fw-bold text-danger mb-3">
+                        <%= typeof error !== 'undefined' && error.status ? error.status : 'Oops!' %>
+                    </h1>
+                    <h2 class="h4 mb-4">
+                        <%= typeof message !== 'undefined' ? message : 'Something went wrong' %>
+                    </h2>
+                    <p class="lead text-muted mb-4">
+                        <% if (typeof error !== 'undefined' && error.status === 404) { %>
+                            The page you're looking for doesn't exist.
+                        <% } else if (typeof error !== 'undefined' && error.status === 403) { %>
+                            You don't have permission to access this resource.
+                        <% } else { %>
+                            We're sorry, but something went wrong on our end. Please try again later.
+                        <% } %>
+                    </p>
+                    
+                    <div class="d-flex gap-3 justify-content-center">
+                        <a href="/" class="btn btn-primary">
+                            <i class="bi bi-house"></i> Go Home
+                        </a>
+                        <a href="javascript:history.back()" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Go Back
+                        </a>
+                    </div>
+                    
+                    <% if (typeof error !== 'undefined' && error.stack && process.env.NODE_ENV === 'development') { %>
+                        <div class="mt-5">
+                            <details>
+                                <summary class="text-muted">Error Details (Development)</summary>
+                                <pre class="text-start bg-light p-3 mt-2 rounded"><%= error.stack %></pre>
+                            </details>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

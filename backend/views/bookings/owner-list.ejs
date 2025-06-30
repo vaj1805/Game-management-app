@@ -1,0 +1,145 @@
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Game Bookings</h2>
+                <a href="/games/owner/list" class="btn btn-primary">
+                    <i class="bi bi-controller"></i> Manage Games
+                </a>
+            </div>
+
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="alert alert-danger" role="alert">
+                    <%= error %>
+                </div>
+            <% } %>
+
+            <% if (typeof success !== 'undefined' && success) { %>
+                <div class="alert alert-success" role="alert">
+                    <%= success %>
+                </div>
+            <% } %>
+
+            <% if (bookings && bookings.length > 0) { %>
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Game</th>
+                                        <th>Player</th>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th>Players</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% bookings.forEach(booking => { %>
+                                        <tr>
+                                            <td>
+                                                <div>
+                                                    <strong><%= booking.game.name %></strong>
+                                                    <br>
+                                                    <small class="text-muted">
+                                                        <i class="bi bi-geo-alt"></i> <%= booking.game.city %>
+                                                    </small>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <strong><%= booking.user.name %></strong>
+                                                    <br>
+                                                    <small class="text-muted">
+                                                        <i class="bi bi-envelope"></i> <%= booking.user.email %>
+                                                    </small>
+                                                </div>
+                                            </td>
+                                            <td><%= booking.date %></td>
+                                            <td><%= booking.timeRange.from %> - <%= booking.timeRange.to %></td>
+                                            <td><%= booking.quantity %></td>
+                                            <td>₹<%= booking.totalPrice %></td>
+                                            <td>
+                                                <span class="badge bg-<%= booking.paymentStatus === 'paid' ? 'success' : 
+                                                                      booking.paymentStatus === 'pending' ? 'warning' : 'danger' %>">
+                                                    <%= booking.paymentStatus %>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <a href="/games/<%= booking.game._id %>" 
+                                                       class="btn btn-sm btn-outline-info">
+                                                        <i class="bi bi-eye"></i> View Game
+                                                    </a>
+                                                    
+                                                    <% if (booking.paymentStatus === 'pending') { %>
+                                                        <form action="/bookings/<%= booking._id %>/cancel" 
+                                                              method="POST" class="d-inline">
+                                                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                                    onclick="return confirm('Are you sure you want to cancel this booking?')">
+                                                                <i class="bi bi-x-circle"></i> Cancel
+                                                            </button>
+                                                        </form>
+                                                    <% } %>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary Statistics -->
+                <div class="row mt-4">
+                    <div class="col-md-3">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body text-center">
+                                <h5>Total Bookings</h5>
+                                <h3><%= bookings.length %></h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-success text-white">
+                            <div class="card-body text-center">
+                                <h5>Paid Bookings</h5>
+                                <h3><%= bookings.filter(b => b.paymentStatus === 'paid').length %></h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-warning text-white">
+                            <div class="card-body text-center">
+                                <h5>Pending Payments</h5>
+                                <h3><%= bookings.filter(b => b.paymentStatus === 'pending').length %></h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-info text-white">
+                            <div class="card-body text-center">
+                                <h5>Total Revenue</h5>
+                                <h3>₹<%= bookings.filter(b => b.paymentStatus === 'paid').reduce((sum, b) => sum + b.totalPrice, 0) %></h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% } else { %>
+                <div class="text-center py-5">
+                    <i class="bi bi-calendar-x text-muted" style="font-size: 4rem;"></i>
+                    <h4 class="text-muted mt-3">No bookings yet</h4>
+                    <p class="text-muted">Add games to start receiving bookings!</p>
+                    <a href="/games/owner/create" class="btn btn-primary">
+                        <i class="bi bi-plus"></i> Add Your First Game
+                    </a>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
